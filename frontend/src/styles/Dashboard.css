@@ -1,0 +1,7 @@
+/* === Dashboard page === */
+
+/* Filter buttons wrap cleanly on mobile */
+.filter-bar {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
