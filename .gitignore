@@ -220,5 +220,6 @@ __marimo__/
 # Node / Frontend
 node_modules/
 frontend/dist/
+frontend/.vite/
 frontend/.env
 frontend/.env.local

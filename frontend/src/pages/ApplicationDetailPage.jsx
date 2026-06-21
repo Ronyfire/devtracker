@@ -42,14 +42,17 @@ export default function ApplicationDetailPage() {
   const [showStatusModal, setShowStatusModal] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
     Promise.all([getApplication(id), getHistory(id)])
       .then(([appRes, histRes]) => {
-        setApplication(appRes.data);
-        setHistory(histRes.data);
+        if (!cancelled) {
+          setApplication(appRes.data);
+          setHistory(histRes.data);
+        }
       })
-      .catch(() => setError("Failed to load application."))
-      .finally(() => setLoading(false));
+      .catch(() => { if (!cancelled) setError("Failed to load application."); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [id]);
 
   const handleEditSave = async (formData) => {
@@ -162,17 +165,6 @@ export default function ApplicationDetailPage() {
                         >
                           {application.job_url}
                         </a>
-                      </dd>
-                    </div>
-                  )}
-                  {application.notes && (
-                    <div className="col-12">
-                      <dt className="detail-field-label">Notes</dt>
-                      <dd
-                        className="detail-field-value mb-0 text-muted"
-                        style={{ whiteSpace: "pre-wrap" }}
-                      >
-                        {application.notes}
                       </dd>
                     </div>
                   )}

@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 
+const formatDate = (iso) =>
+  iso
+    ? new Date(iso).toLocaleDateString("en-IE", { day: "numeric", month: "short", year: "numeric" })
+    : "—";
+
 export default function ApplicationTable({ applications, onDelete, onEdit }) {
   return (
     <div className="table-responsive">
@@ -31,7 +36,7 @@ export default function ApplicationTable({ applications, onDelete, onEdit }) {
               <td><StatusBadge status={app.current_status} /></td>
               <td className="text-muted">{app.source ?? "—"}</td>
               <td className="text-muted">{app.location_type ?? "—"}</td>
-              <td className="text-muted">{app.next_action_date ?? "—"}</td>
+              <td className="text-muted">{formatDate(app.next_action_date)}</td>
               <td>
                 <div className="d-flex gap-2">
                   <button
