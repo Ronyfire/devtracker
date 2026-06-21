@@ -103,6 +103,38 @@ export default function DashboardPage() {
     setApplications((prev) => prev.filter((a) => a.id !== id));
   };
 
+  const handleExportCSV = () => {
+    const headers = ["Company", "Role", "Status", "Source", "Location", "Salary", "Posted date", "Next action", "Job URL", "Notes"];
+    const rows = filtered.map((a) => [
+      a.company,
+      a.role_title,
+      a.current_status,
+      a.source ?? "",
+      a.location_type ?? "",
+      a.salary ?? "",
+      a.posted_date ?? "",
+      a.next_action_date ?? "",
+      a.job_url ?? "",
+      a.notes ?? "",
+    ]);
+
+    const csv =
+      "﻿" +
+      [headers, ...rows]
+        .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+        .join("\r\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `devtracker-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <>
       <div className="container-xl py-4">
@@ -142,10 +174,20 @@ export default function DashboardPage() {
               </button>
             ))}
           </div>
-          <button className="btn btn-success btn-sm" onClick={() => { setEditingApp(null); setShowModal(true); }}>
-            <i className="bi bi-plus-lg me-1" aria-hidden="true" />
-            Add application
-          </button>
+          <div className="d-flex gap-2">
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              onClick={handleExportCSV}
+              disabled={filtered.length === 0}
+            >
+              <i className="bi bi-download me-1" aria-hidden="true" />
+              Export CSV
+            </button>
+            <button className="btn btn-success btn-sm" onClick={() => { setEditingApp(null); setShowModal(true); }}>
+              <i className="bi bi-plus-lg me-1" aria-hidden="true" />
+              Add application
+            </button>
+          </div>
         </div>
 
         {/* Search + Sort */}
