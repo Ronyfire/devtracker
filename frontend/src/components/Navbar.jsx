@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
@@ -35,7 +35,9 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-dark bg-primary sticky-top">
       <div className="container-xl d-flex align-items-center justify-content-between w-100">
-        <span className="navbar-brand fw-bold mb-0">DevTracker</span>
+        <Link to="/" className="navbar-brand fw-bold mb-0 text-white text-decoration-none">
+          DevTracker
+        </Link>
 
         {user && (
           <div className="dropdown" ref={dropdownRef}>

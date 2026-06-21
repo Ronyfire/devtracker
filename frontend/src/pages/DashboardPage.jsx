@@ -18,6 +18,8 @@ const METRIC_CONFIG = [
 export default function DashboardPage() {
   const [applications, setApplications] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("default");
   const [showModal, setShowModal] = useState(false);
   const [editingApp, setEditingApp] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,13 +47,37 @@ export default function DashboardPage() {
     return { total, interviews, offers, responseRate };
   }, [applications]);
 
-  const filtered = useMemo(
-    () =>
-      statusFilter === "All"
-        ? applications
-        : applications.filter((a) => a.current_status === statusFilter),
-    [applications, statusFilter]
-  );
+  const filtered = useMemo(() => {
+    let result = statusFilter === "All"
+      ? applications
+      : applications.filter((a) => a.current_status === statusFilter);
+
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      result = result.filter(
+        (a) => a.company.toLowerCase().includes(q) || a.role_title.toLowerCase().includes(q)
+      );
+    }
+
+    if (sortBy === "company-asc") {
+      result = [...result].sort((a, b) => a.company.localeCompare(b.company));
+    } else if (sortBy === "company-desc") {
+      result = [...result].sort((a, b) => b.company.localeCompare(a.company));
+    } else if (sortBy === "next-action") {
+      result = [...result].sort((a, b) => {
+        if (!a.next_action_date && !b.next_action_date) return 0;
+        if (!a.next_action_date) return 1;
+        if (!b.next_action_date) return -1;
+        return a.next_action_date.localeCompare(b.next_action_date);
+      });
+    } else if (sortBy === "status") {
+      result = [...result].sort(
+        (a, b) => STATUSES.indexOf(a.current_status) - STATUSES.indexOf(b.current_status)
+      );
+    }
+
+    return result;
+  }, [applications, statusFilter, search, sortBy]);
 
   const handleModalSave = async (formData) => {
     const cleaned = Object.fromEntries(
@@ -95,8 +121,8 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Filters + Add button */}
-        <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        {/* Status filters + Add button */}
+        <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
           <div className="filter-bar d-flex flex-wrap gap-2" role="group" aria-label="Filter by status">
             <button
               aria-pressed={statusFilter === "All"}
@@ -122,6 +148,36 @@ export default function DashboardPage() {
           </button>
         </div>
 
+        {/* Search + Sort */}
+        <div className="d-flex gap-2 mb-3">
+          <div className="input-group input-group-sm" style={{ maxWidth: "320px" }}>
+            <span className="input-group-text bg-white border-end-0 text-muted">
+              <i className="bi bi-search" aria-hidden="true" />
+            </span>
+            <input
+              type="search"
+              className="form-control border-start-0"
+              placeholder="Search company or role…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search applications"
+            />
+          </div>
+          <select
+            className="form-select form-select-sm"
+            style={{ width: "auto" }}
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            aria-label="Sort by"
+          >
+            <option value="default">Recently added</option>
+            <option value="company-asc">Company A→Z</option>
+            <option value="company-desc">Company Z→A</option>
+            <option value="next-action">Next action date</option>
+            <option value="status">By status</option>
+          </select>
+        </div>
+
         {/* States */}
         {loading && <p className="text-muted">Loading…</p>}
         {error && <div className="alert alert-danger">{error}</div>}
@@ -132,6 +188,8 @@ export default function DashboardPage() {
               <p className="text-center text-muted py-5">
                 {applications.length === 0
                   ? "No applications yet. Add your first one."
+                  : search.trim()
+                  ? "No applications match your search."
                   : "No applications match this filter."}
               </p>
             ) : (
