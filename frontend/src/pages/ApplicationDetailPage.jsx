@@ -168,6 +168,17 @@ export default function ApplicationDetailPage() {
                       </dd>
                     </div>
                   )}
+                  {application.notes && (
+                    <div className="col-12">
+                      <dt className="detail-field-label">Notes</dt>
+                      <dd
+                        className="detail-field-value mb-0 text-muted"
+                        style={{ whiteSpace: "pre-wrap" }}
+                      >
+                        {application.notes}
+                      </dd>
+                    </div>
+                  )}
                 </dl>
               </div>
             </div>

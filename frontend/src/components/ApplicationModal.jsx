@@ -115,18 +115,16 @@ export default function ApplicationModal({ application = null, onSave, onClose }
                   <label className="form-label">Next action date</label>
                   <input type="date" className="form-control" value={form.next_action_date} onChange={set("next_action_date")} />
                 </div>
-                {!isEdit && (
-                  <div className="col-12">
-                    <label className="form-label">Notes</label>
-                    <textarea
-                      className="form-control"
-                      rows={3}
-                      value={form.notes}
-                      onChange={set("notes")}
-                      placeholder="Initial thoughts, referral contact, etc."
-                    />
-                  </div>
-                )}
+                <div className="col-12">
+                  <label className="form-label">Notes</label>
+                  <textarea
+                    className="form-control"
+                    rows={3}
+                    value={form.notes}
+                    onChange={set("notes")}
+                    placeholder="Referral contact, salary details, company impressions…"
+                  />
+                </div>
               </div>
             </div>
             <div className="modal-footer">
