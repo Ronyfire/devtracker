@@ -3,7 +3,7 @@ import MetricCard from "../components/MetricCard";
 import ApplicationTable from "../components/ApplicationTable";
 import ApplicationCard from "../components/ApplicationCard";
 import ApplicationModal from "../components/ApplicationModal";
-import { getApplications, createApplication, deleteApplication } from "../services/applications";
+import { getApplications, createApplication, updateApplication, deleteApplication } from "../services/applications";
 import "../styles/Dashboard.css";
 
 const STATUSES = ["Applied", "Screening", "Technical Interview", "Final Interview", "Offer", "Rejected"];
@@ -19,6 +19,7 @@ export default function DashboardPage() {
   const [applications, setApplications] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
   const [showModal, setShowModal] = useState(false);
+  const [editingApp, setEditingApp] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -52,12 +53,22 @@ export default function DashboardPage() {
     [applications, statusFilter]
   );
 
-  const handleSave = async (formData) => {
+  const handleModalSave = async (formData) => {
     const cleaned = Object.fromEntries(
       Object.entries(formData).filter(([, v]) => v !== "")
     );
-    const { data } = await createApplication(cleaned);
-    setApplications((prev) => [data, ...prev]);
+    if (editingApp) {
+      const { data } = await updateApplication(editingApp.id, cleaned);
+      setApplications((prev) => prev.map((a) => (a.id === editingApp.id ? data : a)));
+    } else {
+      const { data } = await createApplication(cleaned);
+      setApplications((prev) => [data, ...prev]);
+    }
+  };
+
+  const handleEdit = (app) => {
+    setEditingApp(app);
+    setShowModal(true);
   };
 
   const handleDelete = async (id) => {
@@ -105,7 +116,7 @@ export default function DashboardPage() {
               </button>
             ))}
           </div>
-          <button className="btn btn-success btn-sm" onClick={() => setShowModal(true)}>
+          <button className="btn btn-success btn-sm" onClick={() => { setEditingApp(null); setShowModal(true); }}>
             <i className="bi bi-plus-lg me-1" aria-hidden="true" />
             Add application
           </button>
@@ -127,12 +138,12 @@ export default function DashboardPage() {
               <>
                 {/* Desktop: table */}
                 <div className="d-none d-md-block">
-                  <ApplicationTable applications={filtered} onDelete={handleDelete} />
+                  <ApplicationTable applications={filtered} onDelete={handleDelete} onEdit={handleEdit} />
                 </div>
                 {/* Mobile: cards */}
                 <div className="d-md-none">
                   {filtered.map((app) => (
-                    <ApplicationCard key={app.id} application={app} onDelete={handleDelete} />
+                    <ApplicationCard key={app.id} application={app} onDelete={handleDelete} onEdit={handleEdit} />
                   ))}
                 </div>
               </>
@@ -142,7 +153,11 @@ export default function DashboardPage() {
       </div>
 
       {showModal && (
-        <ApplicationModal onSave={handleSave} onClose={() => setShowModal(false)} />
+        <ApplicationModal
+          application={editingApp}
+          onSave={handleModalSave}
+          onClose={() => { setShowModal(false); setEditingApp(null); }}
+        />
       )}
     </>
   );

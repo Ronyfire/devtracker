@@ -16,8 +16,24 @@ const EMPTY_FORM = {
   notes: "",
 };
 
-export default function ApplicationModal({ onSave, onClose }) {
-  const [form, setForm] = useState(EMPTY_FORM);
+const initForm = (app) =>
+  app
+    ? {
+        company: app.company ?? "",
+        role_title: app.role_title ?? "",
+        job_url: app.job_url ?? "",
+        source: app.source ?? "",
+        salary: app.salary ?? "",
+        location_type: app.location_type ?? "",
+        posted_date: app.posted_date ?? "",
+        next_action_date: app.next_action_date ?? "",
+        notes: app.notes ?? "",
+      }
+    : EMPTY_FORM;
+
+export default function ApplicationModal({ application = null, onSave, onClose }) {
+  const [form, setForm] = useState(() => initForm(application));
+  const isEdit = application !== null;
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const dialogRef = useFocusTrap(onClose);
@@ -52,7 +68,9 @@ export default function ApplicationModal({ onSave, onClose }) {
       >
         <div className="modal-content">
           <div className="modal-header">
-            <h5 id="modal-title" className="modal-title fw-bold">Add application</h5>
+            <h5 id="modal-title" className="modal-title fw-bold">
+              {isEdit ? "Edit application" : "Add application"}
+            </h5>
             <button className="btn-close" onClick={onClose} />
           </div>
           <form onSubmit={handleSubmit}>
@@ -97,10 +115,18 @@ export default function ApplicationModal({ onSave, onClose }) {
                   <label className="form-label">Next action date</label>
                   <input type="date" className="form-control" value={form.next_action_date} onChange={set("next_action_date")} />
                 </div>
-                <div className="col-12">
-                  <label className="form-label">Notes</label>
-                  <textarea className="form-control" rows={3} value={form.notes} onChange={set("notes")} />
-                </div>
+                {!isEdit && (
+                  <div className="col-12">
+                    <label className="form-label">Notes</label>
+                    <textarea
+                      className="form-control"
+                      rows={3}
+                      value={form.notes}
+                      onChange={set("notes")}
+                      placeholder="Initial thoughts, referral contact, etc."
+                    />
+                  </div>
+                )}
               </div>
             </div>
             <div className="modal-footer">
@@ -108,7 +134,7 @@ export default function ApplicationModal({ onSave, onClose }) {
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? "Saving…" : "Add application"}
+                {loading ? "Saving…" : isEdit ? "Save changes" : "Add application"}
               </button>
             </div>
           </form>

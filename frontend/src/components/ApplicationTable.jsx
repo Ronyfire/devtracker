@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 
-export default function ApplicationTable({ applications, onDelete }) {
+export default function ApplicationTable({ applications, onDelete, onEdit }) {
   return (
     <div className="table-responsive">
       <table className="table table-hover applications-table mb-0">
@@ -18,19 +19,34 @@ export default function ApplicationTable({ applications, onDelete }) {
         <tbody>
           {applications.map((app) => (
             <tr key={app.id}>
-              <td className="fw-semibold">{app.company}</td>
+              <td>
+                <Link
+                  to={`/applications/${app.id}`}
+                  className="fw-semibold text-dark text-decoration-none"
+                >
+                  {app.company}
+                </Link>
+              </td>
               <td>{app.role_title}</td>
               <td><StatusBadge status={app.current_status} /></td>
               <td className="text-muted">{app.source ?? "—"}</td>
               <td className="text-muted">{app.location_type ?? "—"}</td>
               <td className="text-muted">{app.next_action_date ?? "—"}</td>
               <td>
-                <button
-                  className="btn btn-outline-danger btn-sm"
-                  onClick={() => onDelete(app.id)}
-                >
-                  Delete
-                </button>
+                <div className="d-flex gap-2">
+                  <button
+                    className="btn btn-outline-primary btn-sm"
+                    onClick={() => onEdit(app)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-outline-danger btn-sm"
+                    onClick={() => onDelete(app.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
