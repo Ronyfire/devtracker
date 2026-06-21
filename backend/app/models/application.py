@@ -15,6 +15,7 @@ class Application(db.Model):
     location_type = db.Column(db.Enum(*LOCATION_TYPES, name="location_type_enum"), nullable=True)
     posted_date = db.Column(db.Date, nullable=True)
     next_action_date = db.Column(db.Date, nullable=True)
+    notes = db.Column(db.Text, nullable=True)
     current_status = db.Column(
         db.Enum(*STATUSES, name="status_enum"),
         nullable=False,
@@ -41,5 +42,6 @@ class Application(db.Model):
             "location_type": self.location_type,
             "posted_date": self.posted_date.isoformat() if self.posted_date else None,
             "next_action_date": self.next_action_date.isoformat() if self.next_action_date else None,
+            "notes": self.notes,
             "current_status": self.current_status,
         }
