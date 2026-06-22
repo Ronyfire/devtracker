@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import ApplicationDetailPage from "./pages/ApplicationDetailPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function PrivateRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -23,6 +24,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ApplicationDetailPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <ProfilePage />
               </PrivateRoute>
             }
           />

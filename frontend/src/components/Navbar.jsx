@@ -61,6 +61,16 @@ export default function Navbar() {
               </li>
               <li><hr className="dropdown-divider d-none d-sm-block" /></li>
               <li>
+                <Link
+                  className="dropdown-item"
+                  to="/profile"
+                  onClick={() => setOpen(false)}
+                >
+                  Profile
+                </Link>
+              </li>
+              <li><hr className="dropdown-divider" /></li>
+              <li>
                 <button className="dropdown-item" onClick={handleLogout}>
                   Log out
                 </button>
