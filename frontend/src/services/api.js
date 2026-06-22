@@ -16,4 +16,7 @@ export const registerUser = (email, password) =>
 export const loginUser = (email, password) =>
   api.post("/api/auth/login", { email, password });
 
+export const updateProfile = (data) =>
+  api.put("/api/auth/profile", data);
+
 export default api;
