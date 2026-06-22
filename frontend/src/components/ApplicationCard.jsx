@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 
+const formatDate = (iso) =>
+  iso
+    ? new Date(iso).toLocaleDateString("en-IE", { day: "numeric", month: "short", year: "numeric" })
+    : null;
+
 export default function ApplicationCard({ application, onDelete, onEdit }) {
   const { company, role_title, current_status, source, location_type, next_action_date } = application;
 
@@ -19,7 +24,7 @@ export default function ApplicationCard({ application, onDelete, onEdit }) {
       <div className="d-flex flex-wrap gap-2 mt-2 small text-muted">
         {source && <span>{source}</span>}
         {location_type && <span>· {location_type}</span>}
-        {next_action_date && <span>· Next: {next_action_date}</span>}
+        {next_action_date && <span>· Next: {formatDate(next_action_date)}</span>}
       </div>
       <div className="mt-2 d-flex gap-2 justify-content-end">
         <button
