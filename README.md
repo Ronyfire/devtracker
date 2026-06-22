@@ -2,7 +2,7 @@
 
 A full-stack job application tracker built for daily use during a job search. Create and manage applications, move them through a hiring pipeline, and keep a full history of every status change.
 
-> **Screenshot** — add one here after a build (e.g. `docs/screenshot.png`)
+![DevTracker dashboard](docs/screenshot.png)
 
 ---
 
