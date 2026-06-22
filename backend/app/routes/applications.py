@@ -62,6 +62,7 @@ def create_application():
         location_type=location_type,
         posted_date=posted_date,
         next_action_date=next_action_date,
+        notes=data.get("notes") or None,
         current_status="Applied",
     )
     db.session.add(application)
@@ -70,7 +71,7 @@ def create_application():
     db.session.add(StatusHistory(
         application_id=application.id,
         status="Applied",
-        notes=data.get("notes"),
+        notes=None,
     ))
     db.session.commit()
 
@@ -105,6 +106,8 @@ def update_application(application_id):
         application.job_url = data["job_url"]
     if "salary" in data:
         application.salary = data["salary"]
+    if "notes" in data:
+        application.notes = data["notes"] or None
 
     if "source" in data:
         if data["source"] and data["source"] not in SOURCES:
