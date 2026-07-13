@@ -223,3 +223,6 @@ frontend/dist/
 frontend/.vite/
 frontend/.env
 frontend/.env.local
+
+# Local API testing files (contain real tokens/credentials)
+backend/requests.http

@@ -1,0 +1,32 @@
+### Register
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "your-email@example.com",
+  "password": "your-password"
+}
+
+### Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "your-email@example.com",
+  "password": "your-password"
+}
+### Create application
+POST http://127.0.0.1:5000/api/applications/
+Content-Type: application/json
+Authorization: Bearer <paste-access-token-from-login-response>
+
+{
+  "company": "Stripe",
+  "role_title": "Junior Developer",
+  "source": "LinkedIn",
+  "location_type": "Remote"
+}
+
+### Get application history
+GET http://127.0.0.1:5000/api/applications/1/history
+Authorization: Bearer <paste-access-token-from-login-response>
