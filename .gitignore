@@ -223,6 +223,14 @@ frontend/dist/
 frontend/.vite/
 frontend/.env
 frontend/.env.local
+frontend/.env.*.local
+npm-debug.log*
+yarn-debug.log*
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Local API testing files (contain real tokens/credentials)
 backend/requests.http
