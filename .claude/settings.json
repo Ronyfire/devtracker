@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/block-env-write.js"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/hooks/check-jwt-content.js"
+          }
+        ]
+      }
+    ]
+  }
+}
